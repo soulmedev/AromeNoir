@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">✦ Коллекция 2025 ✦</div>
+            <h1>AROME NOIR</h1>
+            <div class="subtitle">L'essence de l'élégance</div>
+            <p>Погрузитесь в мир изысканных ароматов, где каждая нота рассказывает свою историю. Наша коллекция создана для тех, кто ценит истинную роскошь и безупречный вкус.</p>
+            <button class="cta-button" onclick="scrollToProducts()">
+                <span style="position: relative; z-index: 1;">Исследовать коллекцию</span>
+            </button>
+        </div>
+    </section>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
+            <h3>Доставка по миру</h3>
+            <p>Бесплатная экспресс-доставка в любую точку мира в течение 3-5 дней</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+            <h3>Сертификат качества</h3>
+            <p>Каждый флакон сопровождается сертификатом подлинности</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-gem"></i></div>
+            <h3>Премиум упаковка</h3>
+            <p>Эксклюзивная подарочная упаковка ручной работы</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-crown"></i></div>
+            <h3>VIP обслуживание</h3>
+            <p>Персональный консультант и индивидуальный подход</p>
+        </div>
+    </div>
+
+    <section class="products" id="products">
+        <h2 class="section-title">Наша коллекция</h2>
+        <p class="section-subtitle">Шедевры парфюмерного искусства</p>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    {% if product.badge %}
+                    <div class="product-badge">{{ product.badge }}</div>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-category">{{ product.category }}</div>
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-description">{{ product.description }}</div>
+                    <div class="product-rating">
+                        {% for i in "12345"|make_list %}
+                        <i class="fas fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <div class="product-footer">
+                        <div class="product-price">{{ product.price }} ₽</div>
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form">
+                            {% csrf_token %}
+                            {{ cart_form.quantity.as_hidden }}
+                            {{ cart_form.override.as_hidden }}
+                            <button type="submit" class="add-to-cart">
+                                <i class="fas fa-shopping-bag"></i> В корзину
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

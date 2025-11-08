@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Arome Noir - Эксклюзивные ароматы{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <nav>
+            <div class="logo">AROME NOIR</div>
+            <ul class="nav-links">
+                <li><a href="{% url 'products:home' %}">Главная</a></li>
+                <li><a href="#products">Коллекция</a></li>
+                <li><a href="#about">О нас</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button class="icon-btn"><i class="fas fa-search"></i></button>
+                <button class="icon-btn"><i class="far fa-heart"></i></button>
+                <a href="{% url 'cart:cart_detail' %}" class="icon-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">{{ cart|length }}</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>AROME NOIR</h3>
+                <p>Эксклюзивные ароматы для истинных ценителей роскоши. Каждый флакон — это произведение парфюмерного искусства.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Навигация</h3>
+                <a href="#">О нас</a>
+                <a href="#">Коллекция</a>
+                <a href="#">Новинки</a>
+                <a href="#">Специальные предложения</a>
+                <a href="#">Контакты</a>
+            </div>
+            <div class="footer-section">
+                <h3>Помощь клиентам</h3>
+                <a href="#">Доставка и оплата</a>
+                <a href="#">Возврат товара</a>
+                <a href="#">Часто задаваемые вопросы</a>
+                <a href="#">Гарантия качества</a>
+                <a href="#">Сертификаты</a>
+            </div>
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
+                <p><i class="fas fa-envelope"></i> contact@aromenoir.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Москва, Тверская ул., 15</p>
+                <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">Пн-Вс: 10:00 - 22:00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Arome Noir. Все права защищены. Эксклюзивная парфюмерия премиум-класса.</p>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Товар добавлен в корзину</span>
+    </div>
+
+    {% block scripts %}
+    <script src="{% static 'js/cart.js' %}"></script>
+    {% endblock %}
+</body>
+</html>

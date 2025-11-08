@@ -1,0 +1,730 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-gold: #c9a961;
+    --secondary-gold: #d4af6a;
+    --light-gold: #e8d4a8;
+    --dark-bg: #0f0f0f;
+    --card-bg: #1a1a1a;
+    --text-primary: #f5f5f5;
+    --text-secondary: #b8b8b8;
+    --accent-purple: #7c5295;
+    --accent-rose: #c88ea7;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* Elegant animated background */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: 
+        radial-gradient(ellipse at 10% 20%, rgba(124, 82, 149, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 80%, rgba(200, 142, 167, 0.06) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(201, 169, 97, 0.03) 0%, transparent 60%),
+        linear-gradient(180deg, #0f0f0f 0%, #1a1520 100%);
+}
+
+.bg-animation::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 60%, rgba(201, 169, 97, 0.08) 0%, transparent 50%);
+    animation: float 25s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    50% { 
+        transform: translate(-100px, -100px) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+header {
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(25px) saturate(180%);
+    padding: 25px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--light-gold) 50%, var(--primary-gold) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 4px;
+    animation: shimmerGlow 5s linear infinite;
+    cursor: pointer;
+    position: relative;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+    opacity: 0.5;
+}
+
+@keyframes shimmerGlow {
+    to { background-position: 200% center; }
+}
+
+.nav-links {
+    display: flex;
+    gap: 45px;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-links a:hover {
+    color: var(--primary-gold);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 19px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.icon-btn:hover {
+    color: var(--primary-gold);
+    background: rgba(201, 169, 97, 0.1);
+    transform: translateY(-2px);
+}
+
+.cart-count {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: #000;
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(201, 169, 97, 0.5);
+}
+
+.hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 140px 50px;
+    text-align: center;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: breathe 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes breathe {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.4;
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.7;
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 10px 25px;
+    background: rgba(201, 169, 97, 0.12);
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    border-radius: 50px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-gold);
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 92px;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, var(--light-gold) 0%, var(--primary-gold) 50%, var(--secondary-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    letter-spacing: 8px;
+    line-height: 1.1;
+}
+
+.hero .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    font-weight: 400;
+    letter-spacing: 6px;
+    font-style: italic;
+}
+
+.hero p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 50px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.9;
+    font-weight: 400;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: #000;
+    padding: 22px 55px;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 15px 45px rgba(201, 169, 97, 0.35);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+.cta-button:hover::before {
+    left: 100%;
+}
+
+.cta-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(201, 169, 97, 0.5);
+}
+
+.features {
+    max-width: 1400px;
+    margin: 100px auto;
+    padding: 0 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 50px 35px;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.6), rgba(30, 30, 30, 0.4));
+    border-radius: 25px;
+    border: 1px solid rgba(201, 169, 97, 0.12);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.feature-card:hover {
+    transform: translateY(-12px);
+    border-color: rgba(201, 169, 97, 0.35);
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(30, 30, 30, 0.6));
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-icon {
+    font-size: 52px;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 15px rgba(201, 169, 97, 0.3));
+}
+
+.feature-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--light-gold);
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+.products {
+    max-width: 1400px;
+    margin: 120px auto;
+    padding: 0 50px;
+}
+
+.section-title {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 58px;
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--light-gold), var(--primary-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 70px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 45px;
+}
+
+.product-card {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.5), rgba(30, 30, 30, 0.3));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(201, 169, 97, 0.15);
+    border-radius: 30px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.product-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(201, 169, 97, 0.08), rgba(124, 82, 149, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.product-card:hover {
+    transform: translateY(-15px);
+    border-color: rgba(201, 169, 97, 0.4);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.product-card:hover::after {
+    opacity: 1;
+}
+
+.product-image-container {
+    width: 100%;
+    height: 380px;
+    background: linear-gradient(135deg, rgba(201, 169, 97, 0.12), rgba(124, 82, 149, 0.08));
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(15, 15, 15, 0.4) 100%);
+    z-index: 1;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.12);
+}
+
+.product-badge {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 8px 25px rgba(201, 169, 97, 0.4);
+}
+
+.product-info {
+    padding: 35px;
+    position: relative;
+    z-index: 2;
+}
+
+.product-category {
+    font-size: 11px;
+    color: var(--secondary-gold);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    margin-bottom: 15px;
+    color: var(--light-gold);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.product-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+.product-rating {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 25px;
+}
+
+.product-rating i {
+    color: var(--primary-gold);
+    font-size: 13px;
+    filter: drop-shadow(0 2px 8px rgba(201, 169, 97, 0.3));
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+    border-top: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.product-price {
+    font-size: 34px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.add-to-cart {
+    background: transparent;
+    border: 2px solid var(--primary-gold);
+    color: var(--primary-gold);
+    padding: 14px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.add-to-cart:hover {
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: #000;
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(201, 169, 97, 0.4);
+}
+
+footer {
+    background: linear-gradient(180deg, transparent, rgba(15, 15, 15, 0.95));
+    padding: 80px 50px 40px;
+    margin-top: 120px;
+    border-top: 1px solid rgba(201, 169, 97, 0.12);
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.footer-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--light-gold);
+    margin-bottom: 25px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.footer-section p, .footer-section a {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 2.2;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--primary-gold);
+    padding-left: 5px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.social-icons a {
+    width: 45px;
+    height: 45px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-gold);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(201, 169, 97, 0.05);
+}
+
+.social-icons a:hover {
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: #000;
+    transform: translateY(-5px);
+    border-color: transparent;
+    box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201, 169, 97, 0.1);
+    color: #666;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.notification {
+    position: fixed;
+    top: 120px;
+    right: -450px;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(30, 30, 30, 0.95));
+    backdrop-filter: blur(20px);
+    color: var(--text-primary);
+    padding: 25px 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+    transition: right 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-weight: 500;
+}
+
+.notification.show {
+    right: 40px;
+}
+
+.notification i {
+    font-size: 26px;
+    color: var(--primary-gold);
+}
+
+@media (max-width: 768px) {
+    nav {
+        padding: 0 25px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .hero {
+        padding: 80px 25px;
+    }
+    
+    .hero h1 {
+        font-size: 52px;
+        letter-spacing: 4px;
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .features {
+        padding: 0 25px;
+    }
+    
+    .products {
+        padding: 0 25px;
+    }
+}
+
+/* Scroll animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease forwards;
+}
