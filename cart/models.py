@@ -9,7 +9,7 @@ class CartItem(models.Model):
         User,
         related_name='cart_items',
         on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        verbose_name='Користувач'
     )
     product = models.ForeignKey(
         Product,
@@ -17,19 +17,19 @@ class CartItem(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Товар'
     )
-    quantity = models.PositiveIntegerField('Количество', default=1)
-    created = models.DateTimeField('Добавлено', auto_now_add=True)
-    updated = models.DateTimeField('Обновлено', auto_now=True)
+    quantity = models.PositiveIntegerField('Кількість', default=1)
+    created = models.DateTimeField('Додано', auto_now_add=True)
+    updated = models.DateTimeField('Оновлено', auto_now=True)
 
     class Meta:
-        verbose_name = 'Товар в корзине'
-        verbose_name_plural = 'Товары в корзине'
+        verbose_name = 'Товар у кошику'
+        verbose_name_plural = 'Товари у кошику'
         ordering = ['-created']
-        unique_together = ['user', 'product']  # Один товар в корзине пользователя может быть только один раз
+        unique_together = ['user', 'product']
 
     def __str__(self):
         return f'{self.product.name} - {self.quantity} шт.'
 
     def get_total_price(self):
-        """Получить общую стоимость позиции"""
+        """Отримати загальну вартість позиції"""
         return self.product.price * self.quantity

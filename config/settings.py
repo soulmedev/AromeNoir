@@ -80,8 +80,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Язык и часовой пояс
-LANGUAGE_CODE = 'ru-ru'
-TIME_ZONE = 'Europe/Moscow'
+LANGUAGE_CODE = 'uk-ua'
+TIME_ZONE = 'Europe/Kyiv'
 USE_I18N = True
 USE_TZ = True
 
@@ -92,5 +92,5 @@ CART_SESSION_ID = 'cart'
 
 # Session settings
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
-SESSION_COOKIE_SECURE = True  # Use only with HTTPS
+SESSION_COOKIE_SECURE = False  # Use only with HTTPS in production
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'

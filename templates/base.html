@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Arome Noir - Эксклюзивные ароматы{% endblock %}</title>
+    <title>{% block title %}Arome Noir - Ексклюзивні аромати{% endblock %}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     {% load static %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/cart.css' %}" rel="stylesheet">
 </head>
 <body>
     <div class="bg-animation"></div>
 
     <header>
         <nav>
-            <div class="logo">AROME NOIR</div>
+            <a href="{% url 'products:home' %}" class="logo">AROME NOIR</a>
             <ul class="nav-links">
-                <li><a href="{% url 'products:home' %}">Главная</a></li>
-                <li><a href="#products">Коллекция</a></li>
-                <li><a href="#about">О нас</a></li>
-                <li><a href="#contact">Контакты</a></li>
+                <li><a href="{% url 'products:home' %}">Головна</a></li>
+                <li><a href="#products">Колекція</a></li>
+                <li><a href="#about">Про нас</a></li>
             </ul>
             <div class="nav-icons">
                 <button class="icon-btn"><i class="fas fa-search"></i></button>
@@ -38,7 +38,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>AROME NOIR</h3>
-                <p>Эксклюзивные ароматы для истинных ценителей роскоши. Каждый флакон — это произведение парфюмерного искусства.</p>
+                <p>Ексклюзивні аромати для справжніх цінителів розкоші. Кожен флакон — це твір парфумерного мистецтва.</p>
                 <div class="social-icons">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -47,37 +47,36 @@
                 </div>
             </div>
             <div class="footer-section">
-                <h3>Навигация</h3>
-                <a href="#">О нас</a>
-                <a href="#">Коллекция</a>
+                <h3>Навігація</h3>
+                <a href="#">Про нас</a>
+                <a href="#">Колекція</a>
                 <a href="#">Новинки</a>
-                <a href="#">Специальные предложения</a>
-                <a href="#">Контакты</a>
+                <a href="#">Спеціальні пропозиції</a>
             </div>
             <div class="footer-section">
-                <h3>Помощь клиентам</h3>
-                <a href="#">Доставка и оплата</a>
-                <a href="#">Возврат товара</a>
-                <a href="#">Часто задаваемые вопросы</a>
-                <a href="#">Гарантия качества</a>
-                <a href="#">Сертификаты</a>
+                <h3>Допомога клієнтам</h3>
+                <a href="#">Доставка і оплата</a>
+                <a href="#">Повернення товару</a>
+                <a href="#">Часті питання</a>
+                <a href="#">Гарантія якості</a>
+                <a href="#">Сертифікати</a>
             </div>
             <div class="footer-section">
-                <h3>Контакты</h3>
-                <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
+                <h3>Контакти</h3>
+                <p><i class="fas fa-phone"></i> +380 (44) 123-45-67</p>
                 <p><i class="fas fa-envelope"></i> contact@aromenoir.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Москва, Тверская ул., 15</p>
-                <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">Пн-Вс: 10:00 - 22:00</p>
+                <p><i class="fas fa-map-marker-alt"></i> Київ, вул. Хрещатик, 15</p>
+                <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">Пн-Нд: 10:00 - 22:00</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Arome Noir. Все права защищены. Эксклюзивная парфюмерия премиум-класса.</p>
+            <p>&copy; 2025 Arome Noir. Усі права захищені. Ексклюзивна парфумерія преміум-класу.</p>
         </div>
     </footer>
 
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
-        <span id="notificationText">Товар добавлен в корзину</span>
+        <span id="notificationText">Товар додано до кошика</span>
     </div>
 
     {% block scripts %}

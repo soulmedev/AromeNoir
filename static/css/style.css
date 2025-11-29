@@ -92,6 +92,13 @@ nav {
     animation: shimmerGlow 5s linear infinite;
     cursor: pointer;
     position: relative;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.02);
 }
 
 .logo::after {
