@@ -7,7 +7,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     {% load static %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'css/cart.css' %}" rel="stylesheet">
+
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="bg-animation"></div>
@@ -17,8 +18,8 @@
             <a href="{% url 'products:home' %}" class="logo">AROME NOIR</a>
             <ul class="nav-links">
                 <li><a href="{% url 'products:home' %}">Головна</a></li>
-                <li><a href="#products">Колекція</a></li>
-                <li><a href="#about">Про нас</a></li>
+                <li><a href="{% url 'products:home' %}#products">Колекція</a></li>
+                <li><a href="{% url 'products:about' %}">Про нас</a></li>
             </ul>
             <div class="nav-icons">
                 <button class="icon-btn"><i class="fas fa-search"></i></button>
@@ -27,9 +28,43 @@
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count" id="cartCount">{{ cart|length }}</span>
                 </a>
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <a href="#" class="icon-btn">
+                            <i class="fas fa-user"></i>
+                            <span class="user-name" title="{{ user.get_full_name|default:user.email }}">
+                                {{ user.first_name|default:user.email|truncatechars:12 }}
+                            </span>
+                        </a>
+                        <div class="user-dropdown">
+                            <a href="{% url 'accounts:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Вийти
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="icon-btn">
+                        <i class="fas fa-user"></i>
+                    </a>
+                {% endif %}
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </nav>
     </header>
+
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     {% block content %}
     {% endblock %}
@@ -38,7 +73,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>AROME NOIR</h3>
-                <p>Ексклюзивні аромати для справжніх цінителів розкоші. Кожен флакон — це твір парфумерного мистецтва.</p>
+                <p>Оригінальні аромати від найкращих світових брендів. Гарантія автентичності та якості для справжніх цінителів парфумерії.</p>
                 <div class="social-icons">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -48,18 +83,18 @@
             </div>
             <div class="footer-section">
                 <h3>Навігація</h3>
-                <a href="#">Про нас</a>
-                <a href="#">Колекція</a>
-                <a href="#">Новинки</a>
-                <a href="#">Спеціальні пропозиції</a>
+                <a href="{% url 'products:about' %}">Про нас</a>
+                <a href="{% url 'products:home' %}#products">Колекція</a>
+                <a href="{% url 'products:home' %}">Новинки</a>
+                <a href="{% url 'products:home' %}">Спеціальні пропозиції</a>
             </div>
             <div class="footer-section">
                 <h3>Допомога клієнтам</h3>
-                <a href="#">Доставка і оплата</a>
-                <a href="#">Повернення товару</a>
-                <a href="#">Часті питання</a>
-                <a href="#">Гарантія якості</a>
-                <a href="#">Сертифікати</a>
+                <a href="{% url 'support:delivery_payment' %}">Доставка і оплата</a>
+                <a href="{% url 'support:returns' %}">Повернення товару</a>
+                <a href="{% url 'support:faq' %}">Часті питання</a>
+                <a href="{% url 'support:quality_guarantee' %}">Гарантія якості</a>
+                <a href="{% url 'support:certificates' %}">Сертифікати</a>
             </div>
             <div class="footer-section">
                 <h3>Контакти</h3>
@@ -79,8 +114,62 @@
         <span id="notificationText">Товар додано до кошика</span>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alerts = document.querySelectorAll('.messages-container .alert');
+
+            alerts.forEach(alert => {
+                // Скрываем ЛЮБОЕ сообщение (success, error, info и т.п.) через 2 секунды
+                setTimeout(() => {
+                    alert.classList.add('fade-out');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500); // время на анимацию скрытия
+                }, 2000); // через сколько миллисекунд скрывать alert
+            });
+        });
+    </script>
+
     {% block scripts %}
     <script src="{% static 'js/cart.js' %}"></script>
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (menuToggle && navLinks) {
+                menuToggle.addEventListener('click', () => {
+                    menuToggle.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+                
+                // Close menu when clicking on a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menuToggle.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    });
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!navLinks.contains(e.target) && !menuToggle.contains(e.target) && navLinks.classList.contains('active')) {
+                        menuToggle.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    }
+                });
+                
+                // Close menu on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                        menuToggle.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
     {% endblock %}
 </body>
 </html>

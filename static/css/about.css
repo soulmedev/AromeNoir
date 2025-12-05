@@ -1,0 +1,180 @@
+.about-section {
+    max-width: 1200px;
+    margin: 90px auto;
+    padding: 0 40px;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-text p {
+    font-size: 18px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+}
+
+/* --- Елегантні кроки без блокових контейнерів --- */
+
+.process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 55px;
+    margin-top: 70px;
+}
+
+.process-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 35px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.process-step:last-child {
+    border-bottom: none;
+}
+
+.step-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    min-width: 70px;
+}
+
+.step-content h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: var(--light-gold);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.step-content p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.85;
+}
+
+/* --- Контакти без блоків, у форматі люксової editorial-сітки --- */
+
+.contact-section {
+    margin-top: 90px;
+    margin-bottom: 120px;
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.contact-item:last-child {
+    border-bottom: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.contact-item i {
+    font-size: 30px;
+    color: var(--primary-gold);
+    margin-top: 5px;
+}
+
+.contact-item h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--light-gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.contact-item p {
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.contact-note {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/* --- Адаптив --- */
+
+@media (max-width: 1024px) {
+    .about-section {
+        padding: 0 30px;
+        margin: 80px auto;
+    }
+
+    .step-number {
+        font-size: 48px;
+    }
+}
+
+@media (max-width: 767px) {
+    .process-step {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .step-number {
+        font-size: 42px;
+        min-width: auto;
+    }
+
+    .about-text p {
+        font-size: 16px;
+    }
+
+    .contact-item {
+        padding-bottom: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section {
+        padding: 0 20px;
+        margin: 60px auto;
+    }
+
+    .about-text p {
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .step-number {
+        font-size: 38px;
+    }
+
+    .step-content h3 {
+        font-size: 22px;
+    }
+
+    .contact-item i {
+        font-size: 24px;
+    }
+
+    .contact-item h4 {
+        font-size: 18px;
+    }
+}

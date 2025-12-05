@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<link href="{% static 'css/cart.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block title %}Кошик{% endblock %}
 
 {% block content %}
@@ -8,7 +12,7 @@
     <div class="cart-container">
         <h2 class="section-title">Ваш кошик</h2>
         
-        {% if cart %}
+        {% if has_items %}
             <div class="cart-table-wrapper">
                 <table class="cart-table">
                     <thead>
@@ -57,7 +61,7 @@
                         {% endfor %}
                         <tr class="total">
                             <td colspan="5">Разом:</td>
-                            <td>{{ cart.get_total_price }} ₴</td>
+                            <td>{{ cart_obj.get_total_price }} ₴</td>
                         </tr>
                     </tbody>
                 </table>
@@ -67,9 +71,22 @@
                 <a href="{% url 'products:home' %}" class="continue-shopping">
                     <i class="fas fa-arrow-left"></i> Продовжити покупки
                 </a>
-                <a href="{% url 'orders:order_create' %}" class="checkout-btn">
-                    Оформити замовлення <i class="fas fa-arrow-right"></i>
-                </a>
+                
+                {% if not is_authenticated %}
+                    <div class="auth-prompt">
+                        <div class="auth-prompt-content">
+                            <p><i class="fas fa-info-circle"></i> Для зручності рекомендуємо <a href="{% url 'accounts:login' %}?next={% url 'cart:cart_detail' %}">увійти</a> або <a href="{% url 'accounts:register' %}?next={% url 'cart:cart_detail' %}">зареєструватися</a></p>
+                            <p class="auth-prompt-note">Або продовжте без реєстрації</p>
+                        </div>
+                        <a href="{% url 'orders:order_create' %}" class="checkout-btn">
+                            Оформити замовлення <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'orders:order_create' %}" class="checkout-btn">
+                        Оформити замовлення <i class="fas fa-arrow-right"></i>
+                    </a>
+                {% endif %}
             </div>
         {% else %}
             <div class="empty-cart">

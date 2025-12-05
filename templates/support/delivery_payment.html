@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/support.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Доставка і оплата | Arome Noir{% endblock %}
+
+{% block content %}
+<div class="support-page">
+    <h1>Доставка і оплата</h1>
+
+    <div class="support-section">
+        <h2>Способи доставки</h2>
+        <p>Ми здійснюємо доставку по всій Україні:</p>
+        <ul>
+            <li>Нова Пошта — від 1 до 3 днів</li>
+            <li>Кур'єр Нова Пошта — доставка до дверей</li>
+            <li>Самовивіз з нашого магазину (м. Київ)</li>
+        </ul>
+    </div>
+
+    <div class="support-section">
+        <h2>Способи оплати</h2>
+        <ul>
+            <li>Оплата при отриманні (накладений платіж)</li>
+            <li>Оплата онлайн (Visa / MasterCard / Apple Pay / Google Pay)</li>
+            <li>Банківський переказ</li>
+        </ul>
+    </div>
+
+    <div class="support-section">
+        <h2>Терміни обробки замовлення</h2>
+        <p>Обробка замовлень здійснюється щоденно з 09:00 до 21:00.</p>
+        <p>Замовлення, оформлені після 21:00, будуть опрацьовані наступного дня.</p>
+    </div>
+</div>
+{% endblock %}

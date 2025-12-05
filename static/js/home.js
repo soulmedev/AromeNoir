@@ -5,7 +5,6 @@ function scrollToProducts() {
     });
 }
 
-// Intersection Observer для анимации появления элементов
 const observerOptions = {
     threshold: 0.15,
     rootMargin: '0px 0px -80px 0px'
@@ -23,7 +22,6 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Применяем анимации к элементам
 document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('.product-card, .feature-card');
     cards.forEach(card => {
@@ -34,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Parallax эффект для hero секции
 let lastScrollY = 0;
 let ticking = false;
 
@@ -59,13 +56,3 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Простой эффект hover для карточек продуктов
-document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-15px)';
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-    });
-});

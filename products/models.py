@@ -61,7 +61,6 @@ class Product(models.Model):
         return reverse('products:product_detail', args=[self.slug])
     
     def get_badge(self):
-        """Повертає бейдж для товару"""
         if self.is_bestseller:
             return 'Бестселер'
         elif self.is_exclusive:

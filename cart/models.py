@@ -31,5 +31,4 @@ class CartItem(models.Model):
         return f'{self.product.name} - {self.quantity} шт.'
 
     def get_total_price(self):
-        """Отримати загальну вартість позиції"""
         return self.product.price * self.quantity
