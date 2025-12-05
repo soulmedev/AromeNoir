@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/collection.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Колекція - Arome Noir{% endblock %}
+
+{% block content %}
+<section class="collection-hero">
+    <div class="collection-hero-content">
+        <div class="hero-badge">✦ Наша колекція ✦</div>
+        <h1>Всі аромати</h1>
+        <p class="hero-subtitle">Відкрийте для себе унікальні парфуми від найкращих світових брендів</p>
+    </div>
+</section>
+
+<section class="collection-section">
+    <div class="collection-container">
+        <aside class="filters-sidebar">
+            <div class="filters-header">
+                <h2>Фільтри</h2>
+                <button class="clear-filters" onclick="clearAllFilters()">
+                    <i class="fas fa-times"></i> Очистити
+                </button>
+            </div>
+
+            <form method="get" action="{% url 'products:collection' %}" id="filterForm" class="filters-form">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-search"></i> Пошук
+                    </label>
+                    <input type="text" name="search" value="{{ search_query }}" 
+                           placeholder="Назва товару..." class="filter-input">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-tags"></i> Категорії
+                    </label>
+                    <div class="filter-options">
+                        <label class="filter-checkbox">
+                            <input type="radio" name="category" value="" 
+                                   {% if not selected_category %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Всі категорії</span>
+                        </label>
+                        {% for category in categories %}
+                        <label class="filter-checkbox">
+                            <input type="radio" name="category" value="{{ category.slug }}" 
+                                   {% if selected_category == category.slug %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>{{ category.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-spray-can"></i> Тип аромату
+                    </label>
+                    <div class="filter-options">
+                        <label class="filter-checkbox">
+                            <input type="radio" name="scent_type" value="" 
+                                   {% if not selected_scent_type %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Всі типи</span>
+                        </label>
+                        {% for value, label in scent_types %}
+                        <label class="filter-checkbox">
+                            <input type="radio" name="scent_type" value="{{ value }}" 
+                                   {% if selected_scent_type == value %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>{{ label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-star"></i> Особливі
+                    </label>
+                    <div class="filter-options">
+                        <label class="filter-checkbox">
+                            <input type="radio" name="badge" value="" 
+                                   {% if not selected_badge %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Всі товари</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="radio" name="badge" value="bestseller" 
+                                   {% if selected_badge == 'bestseller' %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Бестселери</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="radio" name="badge" value="exclusive" 
+                                   {% if selected_badge == 'exclusive' %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Ексклюзив</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="radio" name="badge" value="limited" 
+                                   {% if selected_badge == 'limited' %}checked{% endif %} 
+                                   onchange="this.form.submit()">
+                            <span>Обмежена серія</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-dollar-sign"></i> Ціна
+                    </label>
+                    <div class="price-range">
+                        <div class="price-inputs">
+                            <input type="number" name="min_price" value="{{ min_price }}" 
+                                   placeholder="Від" min="0" step="100" class="filter-input price-input">
+                            <span class="price-separator">-</span>
+                            <input type="number" name="max_price" value="{{ max_price }}" 
+                                   placeholder="До" min="0" step="100" class="filter-input price-input">
+                        </div>
+                        <button type="submit" class="price-apply-btn">
+                            <i class="fas fa-check"></i> Застосувати
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-sort"></i> Сортування
+                    </label>
+                    <select name="sort" class="filter-select" onchange="this.form.submit()">
+                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Новинки</option>
+                        <option value="price_low" {% if selected_sort == 'price_low' %}selected{% endif %}>Ціна: від низької</option>
+                        <option value="price_high" {% if selected_sort == 'price_high' %}selected{% endif %}>Ціна: від високої</option>
+                        <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>За назвою</option>
+                        <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>За рейтингом</option>
+                    </select>
+                </div>
+            </form>
+        </aside>
+
+        <main class="collection-main">
+            <div class="collection-header">
+                <h2 class="collection-title">
+                    Знайдено товарів: <span class="products-count">{{ products.count }}</span>
+                </h2>
+                <button class="mobile-filters-toggle" onclick="toggleFilters()">
+                    <i class="fas fa-filter"></i> Фільтри
+                </button>
+            </div>
+
+            {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% if product.get_badge %}
+                        <div class="product-badge">{{ product.get_badge }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">{{ product.category }}</div>
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-description">{{ product.description }}</div>
+                        <div class="product-rating" data-rating="{% if product.rating %}{{ product.rating }}{% else %}5.0{% endif %}">
+                            <span class="star" data-star-num="1">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="2">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="3">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="4">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="5">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">{{ product.price }} ₴</div>
+                            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="override" value="False">
+                                <button type="submit" class="add-to-cart">
+                                    <i class="fas fa-shopping-bag"></i> До кошика
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-products">
+                <i class="fas fa-search"></i>
+                <h3>Товари не знайдено</h3>
+                <p>Спробуйте змінити параметри фільтрів або пошуку</p>
+                <button class="cta-button" onclick="clearAllFilters()">Очистити фільтри</button>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    function clearAllFilters() {
+        window.location.href = "{% url 'products:collection' %}";
+    }
+
+    function toggleFilters() {
+        const sidebar = document.querySelector('.filters-sidebar');
+        sidebar.classList.toggle('mobile-active');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.querySelector('.filters-sidebar');
+        const toggle = document.querySelector('.mobile-filters-toggle');
+        
+        if (sidebar && sidebar.classList.contains('mobile-active')) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('mobile-active');
+            }
+        }
+    });
+
+    function updateStarRatings() {
+        const ratings = document.querySelectorAll('.product-rating[data-rating]');
+        
+        if (ratings.length === 0) {
+            return;
+        }
+        
+        ratings.forEach(function(ratingEl) {
+            const ratingValue = ratingEl.getAttribute('data-rating');
+            if (!ratingValue) return;
+            
+            const normalizedValue = ratingValue.replace(',', '.');
+            const rating = parseFloat(normalizedValue);
+            
+            if (isNaN(rating) || rating < 0 || rating > 5) {
+                return;
+            }
+            
+            const stars = ratingEl.querySelectorAll('.star');
+            
+            
+            const fullStars = Math.floor(rating);
+            const decimalPart = (rating % 1).toFixed(2);
+            const decimalPartNum = parseFloat(decimalPart);
+            const hasPartial = decimalPartNum > 0.001;
+            
+            stars.forEach(function(star) {
+                const starNum = parseInt(star.getAttribute('data-star-num'));
+                const starFullWrapper = star.querySelector('.star-full-wrapper');
+                
+                if (!starFullWrapper) {
+                    return;
+                }
+                
+                if (starNum <= fullStars) {
+                    starFullWrapper.style.width = '13px';
+                } else if (hasPartial && starNum === fullStars + 1) {
+                    const width = 13 * decimalPartNum;
+                    starFullWrapper.style.width = width + 'px';
+                    starFullWrapper.style.display = 'block';
+                } else {
+                    starFullWrapper.style.width = '0';
+                }
+            });
+        });
+    }
+    
+    function initStarRatings() {
+        setTimeout(function() {
+            updateStarRatings();
+        }, 100);
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStarRatings);
+    } else {
+        initStarRatings();
+    }
+    
+    const observer = new MutationObserver(function(mutations) {
+        let shouldUpdate = false;
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
+                shouldUpdate = true;
+            }
+        });
+        if (shouldUpdate) {
+            setTimeout(updateStarRatings, 50);
+        }
+    });
+    
+    const collectionMain = document.querySelector('.collection-main');
+    if (collectionMain) {
+        observer.observe(collectionMain, { childList: true, subtree: true });
+    }
+</script>
+{% endblock %}
+

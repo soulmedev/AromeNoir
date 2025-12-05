@@ -609,6 +609,58 @@ nav {
     margin-bottom: 25px;
 }
 
+.product-rating .star {
+    position: relative;
+    display: inline-block;
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    line-height: 13px;
+}
+
+.product-rating .star .star-empty,
+.product-rating .star .star-full {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    line-height: 13px;
+    display: block;
+    text-align: center;
+}
+
+.product-rating .star .star-empty {
+    opacity: 1;
+    color: rgba(201, 169, 97, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.product-rating .star .star-full-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 13px;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    z-index: 2;
+    white-space: nowrap;
+    display: block !important;
+}
+
+.product-rating .star .star-full {
+    opacity: 1;
+    color: var(--primary-gold);
+    pointer-events: none;
+    display: block;
+    width: 13px;
+    height: 13px;
+    line-height: 13px;
+    filter: drop-shadow(0 2px 8px rgba(201, 169, 97, 0.3));
+}
+
 .product-rating i {
     color: var(--primary-gold);
     font-size: 13px;

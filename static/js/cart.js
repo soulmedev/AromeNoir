@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    console.log('CSRF Token:', csrftoken ? 'Found' : 'Not found');
-
     function updateCartIndicators(totalItems, totalPrice) {
         const cartCount = document.getElementById('cartCount');
         const cartTotalElement = document.getElementById('cartTotal');
@@ -75,11 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification(data.message || 'Товар додано до кошика');
             } else {
                 const errorMsg = data.message || 'Не вдалося додати товар';
-                console.error('Cart error:', data);
                 showNotification(errorMsg, 'error');
             }
         } catch (error) {
-            console.error('Error adding to cart:', error);
             showNotification(`Помилка: ${error.message}`, 'error');
         }
     }
@@ -117,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification('Не вдалося оновити кількість', 'error');
             }
         } catch (error) {
-            console.error('Error updating quantity:', error);
             showNotification('Сталася помилка', 'error');
         }
     }
@@ -161,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification('Не вдалося оновити кількість', 'error');
             }
         } catch (error) {
-            console.error('Error updating quantity:', error);
             showNotification('Сталася помилка', 'error');
         }
     }
@@ -213,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification('Не вдалося видалити товар', 'error');
             }
         } catch (error) {
-            console.error('Error removing from cart:', error);
             showNotification('Сталася помилка', 'error');
         }
     }
