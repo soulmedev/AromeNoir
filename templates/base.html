@@ -18,7 +18,7 @@
             <a href="{% url 'products:home' %}" class="logo">AROME NOIR</a>
             <ul class="nav-links">
                 <li><a href="{% url 'products:home' %}">Головна</a></li>
-                <li><a href="{% url 'products:home' %}#products">Колекція</a></li>
+                <li><a href="{% url 'products:collection' %}">Колекція</a></li>
                 <li><a href="{% url 'products:about' %}">Про нас</a></li>
             </ul>
             <div class="nav-icons">
@@ -84,7 +84,7 @@
             <div class="footer-section">
                 <h3>Навігація</h3>
                 <a href="{% url 'products:about' %}">Про нас</a>
-                <a href="{% url 'products:home' %}#products">Колекція</a>
+                <a href="{% url 'products:collection' %}">Колекція</a>
                 <a href="{% url 'products:home' %}">Новинки</a>
                 <a href="{% url 'products:home' %}">Спеціальні пропозиції</a>
             </div>
@@ -119,13 +119,12 @@
             const alerts = document.querySelectorAll('.messages-container .alert');
 
             alerts.forEach(alert => {
-                // Скрываем ЛЮБОЕ сообщение (success, error, info и т.п.) через 2 секунды
                 setTimeout(() => {
                     alert.classList.add('fade-out');
                     setTimeout(() => {
                         alert.remove();
-                    }, 500); // время на анимацию скрытия
-                }, 2000); // через сколько миллисекунд скрывать alert
+                    }, 500);
+                }, 2000);
             });
         });
     </script>
@@ -133,7 +132,6 @@
     {% block scripts %}
     <script src="{% static 'js/cart.js' %}"></script>
     <script>
-        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.querySelector('.mobile-menu-toggle');
             const navLinks = document.querySelector('.nav-links');
@@ -144,7 +142,6 @@
                     navLinks.classList.toggle('active');
                 });
                 
-                // Close menu when clicking on a link
                 navLinks.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         menuToggle.classList.remove('active');
@@ -152,7 +149,6 @@
                     });
                 });
                 
-                // Close menu when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!navLinks.contains(e.target) && !menuToggle.contains(e.target) && navLinks.classList.contains('active')) {
                         menuToggle.classList.remove('active');
@@ -160,7 +156,6 @@
                     }
                 });
                 
-                // Close menu on escape key
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && navLinks.classList.contains('active')) {
                         menuToggle.classList.remove('active');
