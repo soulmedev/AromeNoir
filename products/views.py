@@ -3,7 +3,6 @@ from .models import Product, Category
 from cart.forms import CartAddProductForm
 
 def home(request):
-    """Головна сторінка"""
     products = Product.objects.filter(available=True)[:6]
     cart_form = CartAddProductForm()
     return render(request, 'products/home.html', {
@@ -12,7 +11,6 @@ def home(request):
     })
 
 def product_list(request, category_slug=None):
-    """Список товарів"""
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
@@ -30,10 +28,12 @@ def product_list(request, category_slug=None):
     })
 
 def product_detail(request, slug):
-    """Деталі товару"""
     product = get_object_or_404(Product, slug=slug, available=True)
     cart_form = CartAddProductForm()
     return render(request, 'products/product_detail.html', {
         'product': product,
         'cart_form': cart_form
     })
+
+def about(request):
+    return render(request, 'products/about.html')

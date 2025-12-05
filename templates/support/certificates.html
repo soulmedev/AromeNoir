@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/support.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Сертифікати | Arome Noir{% endblock %}
+
+{% block content %}
+<div class="support-page">
+    <h1>Сертифікати</h1>
+
+    <div class="support-section">
+        <h2>Офіційні документи</h2>
+        <p>Вся продукція має сертифікати автентичності та відповідає міжнародним стандартам IFRA.</p>
+    </div>
+
+    <div class="support-section">
+        <h2>Підтвердження постачальників</h2>
+        <p>За запитом ми можемо надати підтвердження від офіційних дистриб’юторів.</p>
+    </div>
+</div>
+{% endblock %}

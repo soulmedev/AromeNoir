@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/support.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Гарантія якості | Arome Noir{% endblock %}
+
+{% block content %}
+<div class="support-page">
+    <h1>Гарантія якості</h1>
+
+    <div class="support-section">
+        <h2>100% оригінальна продукція</h2>
+        <p>Ми працюємо тільки з офіційними постачальниками і гарантуємо автентичність кожного аромату.</p>
+    </div>
+
+    <div class="support-section">
+        <h2>Контроль зберігання</h2>
+        <p>Наш склад обладнаний системами підтримки оптимальної температури та вологості.</p>
+    </div>
+
+    <div class="support-section">
+        <h2>Претензії щодо товару</h2>
+        <p>У разі сумнівів щодо якості — напишіть нам, і ми вирішимо питання у найкоротші строки.</p>
+    </div>
+</div>
+{% endblock %}

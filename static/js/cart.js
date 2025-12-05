@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get CSRF token for AJAX requests - спробуємо декілька способів
     let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
     
     if (!csrftoken) {
-        // Спроба 2: пошук у cookies
         const cookies = document.cookie.split(';');
         for (let cookie of cookies) {
             const [name, value] = cookie.trim().split('=');
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('CSRF Token:', csrftoken ? 'Found' : 'Not found');
 
-    // Update cart indicators
     function updateCartIndicators(totalItems, totalPrice) {
         const cartCount = document.getElementById('cartCount');
         const cartTotalElement = document.getElementById('cartTotal');
@@ -25,32 +22,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartTotalElement) cartTotalElement.textContent = formatPrice(totalPrice);
     }
 
-    // Format price with Ukrainian locale and currency
     function formatPrice(price) {
         const formatter = new Intl.NumberFormat('uk-UA', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
         return formatter.format(price) + ' ₴';
     }
 
-    // Show notification
     function showNotification(message, type = 'success') {
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
         
         if (notification && notificationText) {
+            notification.classList.remove('fade-out');
+            
             notificationText.textContent = message;
             notification.className = `notification ${type}`;
             notification.classList.add('show');
             
             setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3500);
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 500);
+            }, 2000);
         }
     }
 
-    // Add product to cart
     async function addToCart(event) {
         event.preventDefault();
         const form = event.target;
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update cart quantity
     async function updateQuantity(event) {
         event.preventDefault();
         const form = event.target.closest('form');
@@ -106,13 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 updateCartIndicators(data.total_items, data.total_price);
                 
-                // Update row total
                 const totalCell = row.querySelector('td.price:last-child');
                 if (totalCell) {
                     totalCell.textContent = formatPrice(data.item_total);
                 }
                 
-                // Update cart total
                 const cartTotalCell = document.querySelector('tr.total td:last-child');
                 if (cartTotalCell) {
                     cartTotalCell.textContent = formatPrice(data.total_price);
@@ -126,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update cart quantity via +/- buttons
     async function updateQuantityViaButtons(productId, newQuantity) {
         try {
             const response = await fetch(`/cart/update/${productId}/`, {
@@ -148,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 updateCartIndicators(data.total_items, data.total_price);
                 
-                // Find the row and update it
                 const row = document.querySelector(`[data-product-id="${productId}"]`)?.closest('tr');
                 if (row) {
                     const totalCell = row.querySelector('td.price:last-child');
@@ -157,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                // Update cart total
                 const cartTotalCell = document.querySelector('tr.total td:last-child');
                 if (cartTotalCell) {
                     cartTotalCell.textContent = formatPrice(data.total_price);
@@ -173,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Remove item from cart
     async function removeFromCart(event) {
         event.preventDefault();
         const form = event.target;
@@ -195,15 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 row.remove();
                 updateCartIndicators(data.total_items, data.total_price);
                 
-                // Update cart total
                 const cartTotalCell = document.querySelector('tr.total td:last-child');
                 if (cartTotalCell) {
                     cartTotalCell.textContent = formatPrice(data.total_price);
                 }
                 
-                // Show empty cart message if no items left
-                if (data.total_items === 0) {
+                if (data.is_empty) {
                     const cartTable = document.querySelector('.cart-table-wrapper');
+                    const cartActions = document.querySelector('.cart-actions');
                     const emptyCart = document.createElement('div');
                     emptyCart.className = 'empty-cart';
                     emptyCart.innerHTML = `
@@ -213,7 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <i class="fas fa-arrow-left"></i> Перейти до покупок
                         </a>
                     `;
-                    cartTable.replaceWith(emptyCart);
+                    if (cartTable) cartTable.replaceWith(emptyCart);
+                    if (cartActions) cartActions.remove();
                 }
                 
                 showNotification('Товар видалено з кошика');
@@ -226,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event listeners
     document.querySelectorAll('.add-to-cart-form').forEach(form => {
         form.addEventListener('submit', addToCart);
     });
@@ -238,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Quantity buttons (+/-)
     document.querySelectorAll('.qty-btn.qty-plus').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
