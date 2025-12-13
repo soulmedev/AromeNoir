@@ -15,7 +15,6 @@ def collection(request):
     products = Product.objects.filter(available=True)
     categories = Category.objects.all()
     
-    # Фільтри
     category_slug = request.GET.get('category')
     scent_type = request.GET.get('scent_type')
     min_price = request.GET.get('min_price')
@@ -24,15 +23,12 @@ def collection(request):
     sort_by = request.GET.get('sort', 'newest')
     search_query = request.GET.get('search', '')
     
-    # Фільтр по категорії
     if category_slug:
         products = products.filter(category__slug=category_slug)
     
-    # Фільтр по типу аромату
     if scent_type:
         products = products.filter(scent_type=scent_type)
     
-    # Фільтр по ціні
     if min_price:
         try:
             products = products.filter(price__gte=float(min_price))
@@ -44,7 +40,6 @@ def collection(request):
         except ValueError:
             pass
     
-    # Фільтр по бейджу
     if badge == 'bestseller':
         products = products.filter(is_bestseller=True)
     elif badge == 'exclusive':
@@ -52,7 +47,6 @@ def collection(request):
     elif badge == 'limited':
         products = products.filter(is_limited=True)
     
-    # Пошук
     if search_query:
         products = products.filter(
             Q(name__icontains=search_query) |
@@ -60,7 +54,6 @@ def collection(request):
             Q(category__name__icontains=search_query)
         )
     
-    # Сортування
     if sort_by == 'price_low':
         products = products.order_by('price')
     elif sort_by == 'price_high':
@@ -69,15 +62,13 @@ def collection(request):
         products = products.order_by('name')
     elif sort_by == 'rating':
         products = products.order_by('-rating')
-    else:  # newest
+    else:
         products = products.order_by('-created')
     
     cart_form = CartAddProductForm()
     
-    # Отримуємо унікальні типи ароматів для фільтра
     scent_types = Product.SCENT_CHOICES
     
-    # Отримуємо мінімальну та максимальну ціни для діапазону
     all_products = Product.objects.filter(available=True)
     price_range = all_products.aggregate(
         min_price=Min('price'),
