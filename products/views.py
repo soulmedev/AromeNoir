@@ -1,6 +1,10 @@
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Q, Min, Max
-from .models import Product, Category
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q, Min, Max, Avg
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.contrib import messages
+from .models import Product, Category, Review, Favorite
 from cart.forms import CartAddProductForm
 
 def home(request):
@@ -112,10 +116,70 @@ def product_list(request, category_slug=None):
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, available=True)
     cart_form = CartAddProductForm()
+    
+    # Get reviews
+    reviews = Review.objects.filter(product=product).order_by('-created')[:10]
+    num_reviews = Review.objects.filter(product=product).count()
+    avg_rating = Review.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or product.rating
+    
+    # Check if product is in favorites
+    is_favorite = False
+    if request.user.is_authenticated:
+        is_favorite = Favorite.objects.filter(user=request.user, product=product).exists()
+    
+    # Get related products
+    related_products = Product.objects.filter(
+        category=product.category,
+        available=True
+    ).exclude(id=product.id)[:4]
+    
     return render(request, 'products/product_detail.html', {
         'product': product,
-        'cart_form': cart_form
+        'cart_form': cart_form,
+        'reviews': reviews,
+        'num_reviews': num_reviews,
+        'avg_rating': avg_rating,
+        'is_favorite': is_favorite,
+        'related_products': related_products,
     })
 
 def about(request):
     return render(request, 'products/about.html')
+
+@login_required
+def favorites(request):
+    favorites_list = Favorite.objects.filter(user=request.user).select_related('product')
+    products = [fav.product for fav in favorites_list if fav.product.available]
+    cart_form = CartAddProductForm()
+    
+    return render(request, 'products/favorite.html', {
+        'products': products,
+        'cart_form': cart_form,
+    })
+
+@login_required
+@require_POST
+def toggle_favorite(request, product_id):
+    product = get_object_or_404(Product, id=product_id, available=True)
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+    
+    if not created:
+        favorite.delete()
+        is_favorite = False
+        message = 'Товар видалено з улюблених'
+    else:
+        is_favorite = True
+        message = 'Товар додано до улюблених'
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'is_favorite': is_favorite,
+            'message': message
+        })
+    
+    messages.success(request, message)
+    return redirect('products:product_detail', slug=product.slug)

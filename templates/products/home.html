@@ -37,10 +37,11 @@
         <div class="product-grid">
             {% for product in products %}
             <div class="product-card">
+                <a href="{% url 'products:product_detail' product.slug %}" class="product-card-link"></a>
                 <div class="product-image-container">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                    {% if product.badge %}
-                    <div class="product-badge">{{ product.badge }}</div>
+                    {% if product.get_badge %}
+                    <div class="product-badge">{{ product.get_badge }}</div>
                     {% endif %}
                 </div>
                 <div class="product-info">
@@ -81,7 +82,7 @@
                     </div>
                     <div class="product-footer">
                         <div class="product-price">{{ product.price }} ₴</div>
-                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form">
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form" onclick="event.stopPropagation()">
                             {% csrf_token %}
                             <input type="hidden" name="quantity" value="1">
                             <input type="hidden" name="override" value="False">

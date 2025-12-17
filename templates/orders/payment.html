@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оплата замовлення - Arome Noir{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/payment.css' %}" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+<section class="payment-section">
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1 class="section-title">Оплата замовлення #{{ order.id }}</h1>
+            <p class="payment-subtitle">Сума до сплати: <strong>{{ order.total_price }} ₴</strong></p>
+        </div>
+        
+        {% if error %}
+        <div class="payment-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Помилка: {{ error }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="payment-wrapper">
+            <div class="payment-form-section">
+                <div id="payment-form-container">
+                    <form id="payment-form">
+                        <div id="card-element">
+                            <!-- Stripe Elements створить тут форму -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                        <button type="submit" id="submit-button" class="btn-pay">
+                            <span id="button-text">Сплатити {{ order.total_price }} ₴</span>
+                            <span id="spinner" class="spinner hidden"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="payment-summary-section">
+                <h2 class="summary-title">Деталі замовлення</h2>
+                <div class="summary-info">
+                    <div class="info-row">
+                        <span>Номер замовлення:</span>
+                        <span>#{{ order.id }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Отримувач:</span>
+                        <span>{{ order.first_name }} {{ order.last_name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Email:</span>
+                        <span>{{ order.email }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Телефон:</span>
+                        <span>{{ order.phone }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Адреса:</span>
+                        <span>{{ order.address }}, {{ order.city }}, {{ order.postal_code }}</span>
+                    </div>
+                </div>
+                
+                <div class="summary-items">
+                    <h3 class="items-title">Товари:</h3>
+                    {% for item in order.items.all %}
+                    <div class="summary-item">
+                        <div class="summary-item-name">{{ item.product.name }}</div>
+                        <div class="summary-item-details">
+                            <span>{{ item.quantity }} × {{ item.price }} ₴</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="summary-total">
+                    <div class="total-row">
+                        <span>Всього:</span>
+                        <span class="total-price">{{ order.total_price }} ₴</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const stripe = Stripe('{{ stripe_publishable_key }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                color: '#f5f5f5',
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#b8b8b8',
+                },
+            },
+            invalid: {
+                color: '#ff4444',
+            },
+        },
+    });
+    
+    cardElement.mount('#card-element');
+    
+    const cardErrors = document.getElementById('card-errors');
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit-button');
+    const buttonText = document.getElementById('button-text');
+    const spinner = document.getElementById('spinner');
+    
+    cardElement.on('change', function(event) {
+        if (event.error) {
+            cardErrors.textContent = event.error.message;
+            cardErrors.style.display = 'block';
+        } else {
+            cardErrors.textContent = '';
+            cardErrors.style.display = 'none';
+        }
+    });
+    
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        submitButton.disabled = true;
+        buttonText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        
+        const {error, paymentIntent} = await stripe.confirmCardPayment(
+            '{{ client_secret }}',
+            {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: '{{ order.first_name }} {{ order.last_name }}',
+                        email: '{{ order.email }}',
+                        phone: '{{ order.phone }}',
+                        address: {
+                            line1: '{{ order.address }}',
+                            city: '{{ order.city }}',
+                            postal_code: '{{ order.postal_code }}',
+                        },
+                    },
+                },
+            }
+        );
+        
+        if (error) {
+            cardErrors.textContent = error.message;
+            cardErrors.style.display = 'block';
+            submitButton.disabled = false;
+            buttonText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+        } else if (paymentIntent.status === 'succeeded') {
+            // Перенаправляємо на сторінку успіху
+            window.location.href = '{% url "orders:payment_success" order.id %}';
+        }
+    });
+</script>
+{% endblock %}

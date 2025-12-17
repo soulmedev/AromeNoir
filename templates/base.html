@@ -22,7 +22,11 @@
                 <li><a href="{% url 'products:about' %}">Про нас</a></li>
             </ul>
             <div class="nav-icons">
-                <button class="icon-btn"><i class="far fa-heart"></i></button>
+                {% if user.is_authenticated %}
+                <a href="{% url 'products:favorites' %}" class="icon-btn"><i class="far fa-heart"></i></a>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="icon-btn"><i class="far fa-heart"></i></a>
+                {% endif %}
                 <a href="{% url 'cart:cart_detail' %}" class="icon-btn">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count" id="cartCount">{{ cart|length }}</span>

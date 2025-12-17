@@ -9,7 +9,10 @@ class OrderCreateForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control'
-            })
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Введіть ваше ім\'я'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Введіть ваше прізвище'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'example@email.com'})
+        self.fields['phone'].widget.attrs.update({'placeholder': '+380 (XX) XXX-XX-XX'})
+        self.fields['address'].widget.attrs.update({'placeholder': 'Вулиця, будинок, квартира'})
+        self.fields['postal_code'].widget.attrs.update({'placeholder': 'XXXXX'})
+        self.fields['city'].widget.attrs.update({'placeholder': 'Назва міста'})

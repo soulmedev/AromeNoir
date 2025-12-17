@@ -43,6 +43,13 @@ class Order(models.Model):
         decimal_places=2,
         default=0
     )
+    paid = models.BooleanField('Оплачено', default=False)
+    stripe_payment_intent_id = models.CharField(
+        'Stripe Payment Intent ID',
+        max_length=255,
+        blank=True,
+        null=True
+    )
     
     class Meta:
         ordering = ['-created']

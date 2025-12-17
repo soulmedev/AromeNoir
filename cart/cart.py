@@ -1,4 +1,5 @@
 from decimal import Decimal
+import copy
 from django.conf import settings
 from products.models import Product
 from .models import CartItem
@@ -46,6 +47,10 @@ class Cart:
 
     def save(self):
         if not self.user:
+            # Переконуємося, що всі ціни збережені як strings, а не Decimal
+            for product_id, item_data in self.cart.items():
+                if isinstance(item_data.get('price'), (Decimal, float)):
+                    item_data['price'] = str(item_data['price'])
             self.session.modified = True
 
     def remove(self, product):
@@ -70,15 +75,24 @@ class Cart:
         else:
             product_ids = self.cart.keys()
             products = Product.objects.filter(id__in=product_ids)
-            cart = self.cart.copy()
+            # Створюємо глибоку копію, щоб не модифікувати оригінальний словник сесії
+            cart = copy.deepcopy(self.cart)
             
             for product in products:
-                cart[str(product.id)]['product'] = product
+                product_id = str(product.id)
+                if product_id in cart:
+                    cart[product_id]['product'] = product
 
             for item in cart.values():
-                item['price'] = Decimal(item['price'])
-                item['total_price'] = item['price'] * item['quantity']
-                yield item
+                # Конвертуємо price в Decimal тільки для обчислень, не зберігаємо в сесію
+                price = Decimal(item['price'])
+                # Створюємо новий словник, щоб не модифікувати копію, яка може мати посилання
+                yield {
+                    'product': item.get('product'),
+                    'quantity': item['quantity'],
+                    'price': price,  # Decimal для використання в шаблоні
+                    'total_price': price * item['quantity']
+                }
 
     def __len__(self):
         if self.user:
@@ -115,8 +129,13 @@ class Cart:
         if self.user:
             CartItem.objects.filter(user=self.user).delete()
         else:
-            del self.session[settings.CART_SESSION_ID]
-            self.save()
+            # Видаляємо кошик з сесії
+            if settings.CART_SESSION_ID in self.session:
+                del self.session[settings.CART_SESSION_ID]
+            # Очищаємо локальну змінну
+            self.cart = {}
+            # Позначаємо сесію як змінену
+            self.session.modified = True
 
     def sync_to_db(self, user):
         session_cart = self.session.get(settings.CART_SESSION_ID)

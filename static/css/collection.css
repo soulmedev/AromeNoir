@@ -320,6 +320,17 @@
 
 .collection-main .product-card {
     min-width: 0;
+    position: relative;
+}
+
+.collection-main .product-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    text-decoration: none;
 }
 
 .collection-main .product-footer {
@@ -373,6 +384,8 @@
     margin: 0;
     padding: 0;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
 }
 
 /* Rating stars with partial fill */

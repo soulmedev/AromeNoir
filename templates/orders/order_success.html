@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Замовлення успішно оформлено - Arome Noir{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/order.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<section class="order-success-section">
+    <div class="order-success-container">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 class="success-title">Замовлення успішно оформлено!</h1>
+            <p class="success-message">
+                {% if order.paid %}
+                    Ваше замовлення #{{ order.id }} успішно оплачено та прийнято до обробки.
+                {% else %}
+                    Ваше замовлення #{{ order.id }} прийнято до обробки.
+                {% endif %}
+            </p>
+            
+            <div class="order-details">
+                <h2 class="details-title">Деталі замовлення</h2>
+                <div class="details-info">
+                    <div class="info-row">
+                        <span>Номер замовлення:</span>
+                        <strong>#{{ order.id }}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Сума:</span>
+                        <strong>{{ order.total_price }} ₴</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Статус оплати:</span>
+                        <strong>{% if order.paid %}Оплачено{% else %}Очікує оплати{% endif %}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Статус замовлення:</span>
+                        <strong>{{ order.get_status_display }}</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="success-actions">
+                <a href="{% url 'products:home' %}" class="btn-primary">Повернутися до магазину</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'orders:order_detail' order.id %}" class="btn-secondary">Переглянути замовлення</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Arome Noir{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/product_detail.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<section class="product-detail-section">
+    <div class="product-detail-container">
+        <div class="breadcrumbs">
+            <a href="{% url 'products:home' %}">Головна</a>
+            <span>/</span>
+            <a href="{% url 'products:collection' %}">Колекція</a>
+            <span>/</span>
+            <a href="{% url 'products:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a>
+            <span>/</span>
+            <span>{{ product.name }}</span>
+        </div>
+
+        <div class="product-detail-wrapper">
+            <div class="product-image-section">
+                <div class="product-image-container">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-main-image">
+                    {% if product.get_badge %}
+                    <div class="product-badge">{{ product.get_badge }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="product-info-section">
+                <div class="product-header">
+                    <div class="product-category-badge">{{ product.category.name }}</div>
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    <div class="product-rating-section">
+                        <div class="product-rating" data-rating="{{ avg_rating }}">
+                            <span class="star" data-star-num="1">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="2">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="3">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="4">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                            <span class="star" data-star-num="5">
+                                <i class="far fa-star star-empty"></i>
+                                <span class="star-full-wrapper">
+                                    <i class="fas fa-star star-full"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <span class="rating-text">{{ avg_rating|floatformat:1 }}</span>
+                        <span class="review-count">({{ num_reviews }} відгуків)</span>
+                    </div>
+                </div>
+
+                <div class="product-price-section">
+                    <span class="product-price">{{ product.price }} ₴</span>
+                </div>
+
+                <div class="product-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Тип аромату:</span>
+                        <span class="spec-value">{{ product.get_scent_type_display }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Доступність:</span>
+                        <span class="spec-value available">
+                            <i class="fas fa-check-circle"></i> В наявності
+                        </span>
+                    </div>
+                </div>
+
+                <div class="product-description-preview">
+                    <p>{{ product.description|truncatewords:25 }}</p>
+                </div>
+
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="product-actions-form">
+                    {% csrf_token %}
+                    <div class="quantity-selector">
+                        <label for="id_quantity">Кількість:</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn minus" onclick="decreaseQuantity()">-</button>
+                            <input type="number" name="quantity" id="id_quantity" value="1" min="1" max="20" class="quantity-input">
+                            <button type="button" class="quantity-btn plus" onclick="increaseQuantity()">+</button>
+                        </div>
+                        {{ cart_form.override }}
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-add-to-cart">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Додати до кошика</span>
+                        </button>
+                        {% if user.is_authenticated %}
+                        <button type="button" class="btn-favorite {% if is_favorite %}active{% endif %}" 
+                                data-product-id="{{ product.id }}" onclick="toggleFavorite({{ product.id }})">
+                            <i class="{% if is_favorite %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                        {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn-favorite" title="Увійдіть, щоб додати до улюблених">
+                            <i class="far fa-heart"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="product-tabs">
+            <button class="tab-btn active" onclick="switchTab('description')">Опис</button>
+            <button class="tab-btn" onclick="switchTab('reviews')">Відгуки ({{ num_reviews }})</button>
+        </div>
+
+        <div class="tab-content active" id="description-tab">
+            <div class="full-description">
+                <h2 class="section-title">Детальний опис</h2>
+                <div class="description-text">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="reviews-tab">
+            <div class="reviews-section">
+                <h2 class="section-title">Відгуки клієнтів</h2>
+                {% if reviews %}
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-user-info">
+                                <strong class="review-user">{{ review.user.get_full_name|default:review.user.username }}</strong>
+                                <span class="review-date">{{ review.created|date:"d.m.Y" }}</span>
+                            </div>
+                            <div class="review-rating">
+                                {% for i in "12345"|make_list %}
+                                <i class="fas fa-star {% if forloop.counter <= review.rating %}filled{% else %}empty{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="review-text">{{ review.text|linebreaks }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-reviews">
+                    <i class="far fa-comment-alt"></i>
+                    <h3>Поки що немає відгуків</h3>
+                    <p>Будьте першими, хто залишить відгук про цей товар!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if related_products %}
+        <div class="related-products-section">
+            <h2 class="section-title">Схожі товари</h2>
+            <div class="related-products-grid">
+                {% for related_product in related_products %}
+                <div class="related-product-card">
+                    <a href="{% url 'products:product_detail' related_product.slug %}">
+                        <div class="related-product-image">
+                            <img src="{{ related_product.image.url }}" alt="{{ related_product.name }}">
+                            {% if related_product.get_badge %}
+                            <div class="product-badge-small">{{ related_product.get_badge }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="related-product-info">
+                            <div class="related-product-category">{{ related_product.category.name }}</div>
+                            <div class="related-product-name">{{ related_product.name }}</div>
+                            <div class="related-product-price">{{ related_product.price }} ₴</div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    function increaseQuantity() {
+        const input = document.getElementById('id_quantity');
+        const current = parseInt(input.value) || 1;
+        if (current < 20) {
+            input.value = current + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        const input = document.getElementById('id_quantity');
+        const current = parseInt(input.value) || 1;
+        if (current > 1) {
+            input.value = current - 1;
+        }
+    }
+
+    function switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + '-tab').classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function toggleFavorite(productId) {
+        const btn = event.target.closest('.btn-favorite');
+        const icon = btn.querySelector('i');
+        
+        fetch(`/favorites/toggle/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                btn.classList.toggle('active');
+                if (btn.classList.contains('active')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                }
+                
+                // Show notification
+                showNotification(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Помилка при додаванні до улюблених', 'error');
+        });
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        const text = document.getElementById('notificationText');
+        text.textContent = message;
+        notification.className = `notification ${type} show`;
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // Initialize star ratings
+    function updateStarRatings() {
+        const ratings = document.querySelectorAll('.product-rating[data-rating]');
+        
+        ratings.forEach(function(ratingEl) {
+            const ratingValue = ratingEl.getAttribute('data-rating');
+            if (!ratingValue) return;
+            
+            const normalizedValue = ratingValue.replace(',', '.');
+            const rating = parseFloat(normalizedValue);
+            if (isNaN(rating) || rating < 0 || rating > 5) return;
+            
+            const stars = ratingEl.querySelectorAll('.star');
+            const fullStars = Math.floor(rating);
+            const decimalPart = (rating % 1).toFixed(2);
+            const decimalPartNum = parseFloat(decimalPart);
+            const hasPartial = decimalPartNum > 0.001;
+            
+            stars.forEach(function(star) {
+                const starNum = parseInt(star.getAttribute('data-star-num'));
+                const starFullWrapper = star.querySelector('.star-full-wrapper');
+                
+                if (!starFullWrapper) return;
+                
+                if (starNum <= fullStars) {
+                    starFullWrapper.style.width = '16px';
+                } else if (hasPartial && starNum === fullStars + 1) {
+                    const width = 16 * decimalPartNum;
+                    starFullWrapper.style.width = width + 'px';
+                } else {
+                    starFullWrapper.style.width = '0';
+                }
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateStarRatings();
+    });
+</script>
+{% endblock %}

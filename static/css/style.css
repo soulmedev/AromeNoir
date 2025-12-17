@@ -123,24 +123,60 @@ nav {
     margin-left: 15px;
 }
 
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+    margin-left: 15px;
+    position: relative;
+    width: 25px;
+    height: 18px;
+    justify-content: center;
+}
+
 .mobile-menu-toggle span {
     width: 25px;
     height: 2px;
     background: var(--primary-gold);
     transition: all 0.3s ease;
     border-radius: 2px;
+    position: absolute;
+    left: 0;
+    transform-origin: center;
+}
+
+.mobile-menu-toggle span:nth-child(1) {
+    top: 0;
+}
+
+.mobile-menu-toggle span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.mobile-menu-toggle span:nth-child(3) {
+    bottom: 0;
 }
 
 .mobile-menu-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
 }
 
 .mobile-menu-toggle.active span:nth-child(2) {
     opacity: 0;
+    transform: translateY(-50%) scaleX(0);
 }
 
 .mobile-menu-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%) rotate(-45deg);
 }
 
 .nav-links {
@@ -468,6 +504,16 @@ nav {
     position: relative;
 }
 
+.product-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    text-decoration: none;
+}
+
 .product-card::after {
     content: '';
     position: absolute;
@@ -496,6 +542,7 @@ nav {
     background: linear-gradient(135deg, rgba(201, 169, 97, 0.12), rgba(124, 82, 149, 0.08));
     position: relative;
     overflow: hidden;
+    z-index: 0;
 }
 
 .product-image-container::before {
@@ -536,7 +583,7 @@ nav {
 .product-info {
     padding: 35px;
     position: relative;
-    z-index: 2;
+    z-index: 0;
 }
 
 .product-category {
@@ -577,6 +624,8 @@ nav {
 .add-to-cart-form {
     margin: 0;
     padding: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .cart-quantity-form {
